@@ -1,4 +1,9 @@
+include ':utilities'
+include ':presentation'
 include ':domain'
 include ':data'
 include ':app'
 rootProject.name = "TransportApp"
+
+// Libraries
+def dagger = '2.11'

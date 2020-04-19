@@ -1,21 +1,59 @@
 package com.agladkov.transportapp
 
+import android.app.Activity
 import android.app.Application
-import com.agladkov.transportapp.dagger.AppComponent
-import com.agladkov.transportapp.dagger.ApplicationModule
-import com.agladkov.transportapp.dagger.DaggerAppComponent
+import android.app.Presentation
+import com.agladkov.domain.di.DaggerDomainComponent
+import com.agladkov.domain.di.DomainComponent
+import com.agladkov.presentation.di.DaggerPresentationComponent
+import com.agladkov.presentation.di.PresentationComponent
+import com.agladkov.transportapp.di.AppComponent
+import com.agladkov.transportapp.di.DaggerAppComponent
+import com.agladkov.utilities.di.DaggerUtilsComponent
+import com.agladkov.utilities.di.UtilsComponent
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
+import javax.inject.Inject
 
-class TransportApp: Application() {
+class TransportApp: Application(), HasAndroidInjector {
 
-    companion object {
-        lateinit var appComponent: AppComponent
-    }
+    @Inject lateinit var androidInjector : DispatchingAndroidInjector<Any>
+
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     override fun onCreate() {
         super.onCreate()
 
-        appComponent = DaggerAppComponent.builder()
-            .applicationModule(ApplicationModule(application = this))
+        val appComponent = DaggerAppComponent
+            .builder()
+            .application(this)
+            .presentationComponent(providePresentationComponent())
+            .utilsComponent(provideUtilsComponent())
+            .build()
+
+        appComponent.inject(this)
+    }
+
+    private fun providePresentationComponent(): PresentationComponent {
+        return DaggerPresentationComponent
+            .builder()
+            .domainComponent(provideDomainComponent())
+            .utilsComponent(provideUtilsComponent())
+            .build()
+    }
+
+    private fun provideDomainComponent(): DomainComponent {
+        return DaggerDomainComponent
+            .builder()
+            .build()
+    }
+
+    private fun provideUtilsComponent(): UtilsComponent {
+        return DaggerUtilsComponent
+            .builder()
+            .application(this)
             .build()
     }
 }
