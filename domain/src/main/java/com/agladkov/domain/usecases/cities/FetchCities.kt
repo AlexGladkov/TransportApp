@@ -8,7 +8,7 @@ class FetchCities: UseCase<Unit, String> {
         onSuccess: (String) -> Unit,
         onFailure: (String) -> Unit
     ) {
-        onSuccess.invoke("Cities count 6")
+        onSuccess.invoke("Cities Count 10")
     }
 
 }

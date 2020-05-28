@@ -4,6 +4,8 @@ import android.app.Application
 import com.agladkov.domain.di.DomainComponent
 import com.agladkov.presentation.di.PresentationComponent
 import com.agladkov.presentation.di.ScreenBindingModule
+import com.agladkov.presentation.di.ViewModelModule
+import com.agladkov.presentation.screens.countries.CountriesModule
 import com.agladkov.transportapp.TransportApp
 import com.agladkov.transportapp.di.modules.ActivityBindingModule
 import com.agladkov.transportapp.screens.main.MainActivity
@@ -18,7 +20,9 @@ import java.security.DomainCombiner
     modules = [
         AndroidInjectionModule::class,
         ActivityBindingModule::class,
-        ScreenBindingModule::class
+        ScreenBindingModule::class,
+        ViewModelModule::class,
+        CountriesModule::class
     ],
     dependencies = [PresentationComponent::class, UtilsComponent::class]
 )
