@@ -1,9 +1,6 @@
 package com.agladkov.presentation.screens.countries
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.agladkov.domain.usecases.cities.FetchCities
 import com.agladkov.domain.usecases.countries.FetchCountries
 import com.agladkov.presentation.base.BaseViewModel
 import com.agladkov.presentation.screens.countries.adapter.mapToCountryCellModel
@@ -11,12 +8,17 @@ import com.agladkov.presentation.screens.countries.models.CountriesAction
 import com.agladkov.presentation.screens.countries.models.CountriesEvent
 import com.agladkov.presentation.screens.countries.models.CountriesViewState
 import com.agladkov.presentation.screens.countries.models.FetchStatus
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CountriesViewModel @Inject constructor(
     private val fetchCountriesUseCase: FetchCountries
-): BaseViewModel<CountriesViewState, CountriesAction, CountriesEvent>() {
+) : BaseViewModel<CountriesViewState, CountriesAction, CountriesEvent>() {
+
+    private val compositeDisposable = CompositeDisposable()
 
     init {
         viewState = CountriesViewState(fetchStatus = FetchStatus.Loading, data = emptyList())
@@ -29,38 +31,43 @@ class CountriesViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
+    }
+
     private fun loadMoreData() {
-        viewModelScope.launch {
-            fetchCountriesUseCase.execute(
-                request = Unit,
-                onSuccess = { countries ->
-                    viewState = viewState.copy(
-                        fetchStatus = FetchStatus.AddMore,
-                        data = countries.map { it.mapToCountryCellModel() }
-                    )
-                },
-                onFailure = {
-                    viewAction = CountriesAction.ShowSnackbar(message = it)
-                }
-            )
-        }
+        val disposable = fetchCountriesUseCase.execute(request = Unit)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ countries ->
+                viewState = CountriesViewState(
+                    fetchStatus = FetchStatus.AddMore,
+                    data = countries.map { it.mapToCountryCellModel() }
+                )
+            }, {
+                viewAction = CountriesAction.ShowSnackbar(message = it.localizedMessage.orEmpty())
+            })
+
+        compositeDisposable.add(disposable)
     }
 
     private fun getInitialCountries() {
         viewState = CountriesViewState(fetchStatus = FetchStatus.Loading, data = emptyList())
-        viewModelScope.launch {
-            fetchCountriesUseCase.execute(
-                request = Unit,
-                onSuccess = { countries ->
-                    viewState = CountriesViewState(
-                        fetchStatus = FetchStatus.Success,
-                        data = countries.map { it.mapToCountryCellModel() }
-                    )
-                }, onFailure = {
-                    viewState.copy(
-                        fetchStatus = FetchStatus.ShowError(message = it)
-                    )
-                })
-        }
+        val disposable = fetchCountriesUseCase.execute(request = Unit)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ countries ->
+                viewState = CountriesViewState(
+                    fetchStatus = FetchStatus.Success,
+                    data = countries.map { it.mapToCountryCellModel() }
+                )
+            }, {
+                viewState.copy(
+                    fetchStatus = FetchStatus.ShowError(message = it.localizedMessage.orEmpty())
+                )
+            })
+
+        compositeDisposable.add(disposable)
     }
 }

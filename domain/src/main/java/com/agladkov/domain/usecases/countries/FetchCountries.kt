@@ -2,18 +2,14 @@ package com.agladkov.domain.usecases.countries
 
 import com.agladkov.domain.usecases.UseCase
 import com.agladkov.domain.usecases.countries.models.CountryModel
+import io.reactivex.Single
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class FetchCountries: UseCase<Unit, List<CountryModel>> {
 
-    override suspend fun execute(
-        request: Unit?,
-        onSuccess: (List<CountryModel>) -> Unit,
-        onFailure: (String) -> Unit
-    ) {
-        delay(3000)
-        onSuccess.invoke(
+    override fun execute(request: Unit?): Single<List<CountryModel>> {
+        return Single.just(
             listOf(
                 CountryModel(title = "Russia"),
                 CountryModel(title = "USA"),

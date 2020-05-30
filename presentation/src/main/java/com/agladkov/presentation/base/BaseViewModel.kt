@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.agladkov.presentation.helpers.SingleLiveAction
 
-abstract class BaseViewModel<S, A, E>(): ViewModel() {
+abstract class BaseViewModel<S, A, E>: ViewModel() {
 
     private val TAG = BaseViewModel::class.java.simpleName
     private val _viewStates: MutableLiveData<S> = MutableLiveData()
@@ -28,7 +28,7 @@ abstract class BaseViewModel<S, A, E>(): ViewModel() {
     private var _viewAction: A? = null
     protected var viewAction: A
         get() = _viewAction
-            ?: throw UninitializedPropertyAccessException("\"viewEffect\" was queried before being initialized")
+            ?: throw UninitializedPropertyAccessException("\"viewAction\" was queried before being initialized")
         set(value) {
             _viewAction = value
             _viewActions.postValue(value)

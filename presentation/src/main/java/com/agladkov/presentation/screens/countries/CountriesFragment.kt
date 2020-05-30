@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.agladkov.presentation.R
 import com.agladkov.presentation.helpers.injectViewModel
 import com.agladkov.presentation.screens.countries.adapter.CountryAdapter
 import com.agladkov.presentation.screens.countries.adapter.CountryCellModel
+import com.agladkov.presentation.screens.countries.models.CountriesAction
 import com.agladkov.presentation.screens.countries.models.CountriesEvent
 import com.agladkov.presentation.screens.countries.models.CountriesViewState
 import com.agladkov.presentation.screens.countries.models.FetchStatus
@@ -39,15 +41,22 @@ class CountriesFragment : Fragment(R.layout.countries_fragment) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = injectViewModel(factory = viewModelFactory)
-        viewModel.obtainEvent(CountriesEvent.ScreenShown)
-
         viewModel.viewStates().observe(viewLifecycleOwner, Observer { bindViewState(it) })
+        viewModel.viewEffects().observe(viewLifecycleOwner, Observer { bindViewAction(it) })
+        viewModel.obtainEvent(CountriesEvent.ScreenShown)
 
         itemsView.adapter = adapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,
             false)
 
         addMoreView.setOnClickListener { viewModel.obtainEvent(CountriesEvent.MoreClick) }
+    }
+
+    private fun bindViewAction(viewAction: CountriesAction) {
+        when (viewAction) {
+            is CountriesAction.ShowSnackbar -> Toast.makeText(context, viewAction.message,
+                Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun bindViewState(viewState: CountriesViewState) {
