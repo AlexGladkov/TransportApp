@@ -1,28 +1,73 @@
 package com.agladkov.presentation.screens.countries
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.agladkov.domain.usecases.cities.FetchCities
+import androidx.lifecycle.viewModelScope
 import com.agladkov.domain.usecases.countries.FetchCountries
-import kotlinx.android.synthetic.main.countries_fragment.*
-import kotlinx.coroutines.GlobalScope
+import com.agladkov.presentation.base.BaseViewModel
+import com.agladkov.presentation.screens.countries.adapter.mapToCountryCellModel
+import com.agladkov.presentation.screens.countries.models.CountriesAction
+import com.agladkov.presentation.screens.countries.models.CountriesEvent
+import com.agladkov.presentation.screens.countries.models.CountriesViewState
+import com.agladkov.presentation.screens.countries.models.FetchStatus
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CountriesViewModel @Inject constructor(
-    private val fetchCountries: FetchCountries,
-    private val fetchCities: FetchCities
-): ViewModel() {
+    private val fetchCountriesUseCase: FetchCountries
+) : BaseViewModel<CountriesViewState, CountriesAction, CountriesEvent>() {
 
-    val countriesText: MutableLiveData<String> = MutableLiveData("")
+    private val compositeDisposable = CompositeDisposable()
 
-    fun fetchData() {
-        GlobalScope.launch {
-            fetchCities.execute(request = null, onSuccess = { text ->
-               countriesText.postValue(text)
-            }, onFailure = { errorMessage ->
-                countriesText.postValue(errorMessage)
-            })
+    init {
+        viewState = CountriesViewState(fetchStatus = FetchStatus.Loading, data = emptyList())
+    }
+
+    override fun obtainEvent(viewEvent: CountriesEvent) {
+        when (viewEvent) {
+            CountriesEvent.ScreenShown -> getInitialCountries()
+            CountriesEvent.MoreClick -> loadMoreData()
         }
+    }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
+    }
+
+    private fun loadMoreData() {
+        val disposable = fetchCountriesUseCase.execute(request = Unit)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ countries ->
+                viewState = CountriesViewState(
+                    fetchStatus = FetchStatus.AddMore,
+                    data = countries.map { it.mapToCountryCellModel() }
+                )
+            }, {
+                viewAction = CountriesAction.ShowSnackbar(message = it.localizedMessage.orEmpty())
+            })
+
+        compositeDisposable.add(disposable)
+    }
+
+    private fun getInitialCountries() {
+        viewState = CountriesViewState(fetchStatus = FetchStatus.Loading, data = emptyList())
+        val disposable = fetchCountriesUseCase.execute(request = Unit)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ countries ->
+                viewState = CountriesViewState(
+                    fetchStatus = FetchStatus.Success,
+                    data = countries.map { it.mapToCountryCellModel() }
+                )
+            }, {
+                viewState.copy(
+                    fetchStatus = FetchStatus.ShowError(message = it.localizedMessage.orEmpty())
+                )
+            })
+
+        compositeDisposable.add(disposable)
     }
 }

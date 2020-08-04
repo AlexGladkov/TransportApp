@@ -1,14 +1,26 @@
 package com.agladkov.domain.usecases.cities
 
 import com.agladkov.domain.usecases.UseCase
+import com.agladkov.domain.usecases.countries.models.CountryModel
+import io.reactivex.Single
 
-class FetchCities: UseCase<Unit, String> {
-    override suspend fun execute(
-        request: Unit?,
-        onSuccess: (String) -> Unit,
-        onFailure: (String) -> Unit
-    ) {
-        onSuccess.invoke("Cities Count 10")
+class FetchCities: UseCase<Unit, List<CountryModel>> {
+
+    override fun execute(request: Unit?): Single<List<CountryModel>> {
+        return Single.just(
+            listOf(
+                CountryModel(title = "Russia"),
+                CountryModel(title = "USA"),
+                CountryModel(title = "Germany"),
+                CountryModel(title = "Italy"),
+                CountryModel(title = "Spain"),
+                CountryModel(title = "France"),
+                CountryModel(title = "Great Britain"),
+                CountryModel(title = "Ireland"),
+                CountryModel(title = "Austria"),
+                CountryModel(title = "Netherlands")
+            )
+        )
     }
 
 }

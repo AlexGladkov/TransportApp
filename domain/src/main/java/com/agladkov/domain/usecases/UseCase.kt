@@ -1,5 +1,7 @@
 package com.agladkov.domain.usecases
 
+import io.reactivex.Single
+
 interface UseCase<T, R> {
-    suspend fun execute(request: T?, onSuccess: (R) -> Unit, onFailure: (String) -> Unit)
+    fun execute(request: T?): Single<R>
 }
