@@ -9,9 +9,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.agladkov.presentation.R
 
+interface CountryAdapterClicks {
+    fun onItemClick(model: CountryCellModel)
+}
+
 class CountryAdapter: RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
 
     private val data: MutableList<CountryCellModel> = ArrayList()
+    var countryAdapterClicks: CountryAdapterClicks? = null
 
     fun setData(models: List<CountryCellModel>) {
         data.clear()
@@ -31,6 +36,7 @@ class CountryAdapter: RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         holder.bind(model = data[position])
+        holder.itemView.setOnClickListener { countryAdapterClicks?.onItemClick(model = data[position]) }
     }
 
     class CountryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

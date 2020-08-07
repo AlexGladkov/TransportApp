@@ -5,6 +5,7 @@ import com.agladkov.domain.di.DomainComponent
 import com.agladkov.presentation.di.PresentationComponent
 import com.agladkov.presentation.di.ScreenBindingModule
 import com.agladkov.presentation.di.ViewModelModule
+import com.agladkov.presentation.screens.cities.CitiesModule
 import com.agladkov.presentation.screens.countries.CountriesModule
 import com.agladkov.transportapp.TransportApp
 import com.agladkov.transportapp.di.modules.ActivityBindingModule
@@ -22,12 +23,13 @@ import java.security.DomainCombiner
         ActivityBindingModule::class,
         ScreenBindingModule::class,
         ViewModelModule::class,
-        CountriesModule::class
+        CountriesModule::class,
+        CitiesModule::class
     ],
     dependencies = [PresentationComponent::class, UtilsComponent::class]
 )
 @AppScope
-interface AppComponent: AndroidInjector<TransportApp> {
+interface AppComponent : AndroidInjector<TransportApp> {
 
     @Component.Builder
     interface Builder {

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/countriesFragment">
+
+    <fragment
+        android:id="@+id/countriesFragment"
+        android:name="com.agladkov.presentation.screens.countries.CountriesFragment"
+        android:label="countries_fragment"
+        tools:layout="@layout/countries_fragment">
+        <action
+            android:id="@+id/action_countriesFragment_to_citiesFragment"
+            app:destination="@id/citiesFragment">
+        </action>
+        <action
+            android:id="@+id/action_countriesFragment_to_wrongCountryDialog"
+            app:destination="@id/wrongCountryDialog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/citiesFragment"
+        android:name="com.agladkov.presentation.screens.cities.CitiesFragment"
+        android:label="CitiesFragment" >
+        <action
+            android:id="@+id/action_citiesFragment_to_navigation"
+            app:destination="@id/navigation" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/wrongCountryDialog"
+        android:name="com.agladkov.presentation.screens.country_alert.WrongCountryDialog"
+        android:label="WrongCountryDialog" />
+    <navigation android:id="@+id/navigation"
+        app:startDestination="@id/mainFragment">
+        <fragment
+            android:id="@+id/mainFragment"
+            android:name="com.agladkov.presentation.screens.main.MainFragment"
+            android:label="MainFragment" />
+    </navigation>
+</navigation>

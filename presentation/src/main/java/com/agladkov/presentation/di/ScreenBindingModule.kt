@@ -1,6 +1,7 @@
 package com.agladkov.presentation.di
 
 import com.agladkov.domain.di.modules.UseCasesModule
+import com.agladkov.presentation.screens.cities.CitiesFragment
 import com.agladkov.presentation.screens.countries.CountriesFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -10,4 +11,7 @@ abstract class ScreenBindingModule {
 
     @ContributesAndroidInjector
     abstract fun countriesFragment(): CountriesFragment
+
+    @ContributesAndroidInjector
+    abstract fun citiesFragment(): CitiesFragment
 }

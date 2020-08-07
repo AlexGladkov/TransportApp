@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wrong_country_title">Attention!</string>
+    <string name="wrong_country_subtitle">Now we don\'t have any data about this city. But someday we will add this data to our application. Thanks for being with us</string>
+    <string name="action_ok">Ok, I understand</string>
+</resources>
