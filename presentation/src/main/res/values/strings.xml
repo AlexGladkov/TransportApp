@@ -3,4 +3,9 @@
     <string name="wrong_country_title">Attention!</string>
     <string name="wrong_country_subtitle">Now we don\'t have any data about this city. But someday we will add this data to our application. Thanks for being with us</string>
     <string name="action_ok">Ok, I understand</string>
+    <string name="titleSchedule">Schedule</string>
+    <string name="titleNotifications">Notifications</string>
+    <string name="titleSettings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
