@@ -3,8 +3,9 @@ package com.agladkov.domain.usecases.cities
 import com.agladkov.domain.usecases.UseCase
 import com.agladkov.domain.usecases.countries.models.CountryModel
 import io.reactivex.Single
+import javax.inject.Inject
 
-class FetchCities: UseCase<Unit, List<CountryModel>> {
+class FetchCities @Inject constructor(): UseCase<Unit, List<CountryModel>> {
 
     override fun execute(request: Unit?): Single<List<CountryModel>> {
         return Single.just(

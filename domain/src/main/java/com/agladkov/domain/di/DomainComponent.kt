@@ -1,11 +1,8 @@
 package com.agladkov.domain.di
 
-import com.agladkov.domain.di.modules.UseCasesModule
 import dagger.Component
 
-@Component(
-    modules = [UseCasesModule::class]
-)
+@Component
 @DomainScope
 interface DomainComponent {
 

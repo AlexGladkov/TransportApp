@@ -6,7 +6,7 @@ import io.reactivex.Single
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class FetchCountries: UseCase<Unit, List<CountryModel>> {
+class FetchCountries @Inject constructor(): UseCase<Unit, List<CountryModel>> {
 
     override fun execute(request: Unit?): Single<List<CountryModel>> {
         return Single.just(

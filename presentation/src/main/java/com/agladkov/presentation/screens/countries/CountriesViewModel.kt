@@ -1,6 +1,7 @@
 package com.agladkov.presentation.screens.countries
 
-import androidx.lifecycle.viewModelScope
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import com.agladkov.domain.usecases.countries.FetchCountries
 import com.agladkov.presentation.base.BaseViewModel
 import com.agladkov.presentation.screens.countries.adapter.mapToCountryCellModel
@@ -11,10 +12,8 @@ import com.agladkov.presentation.screens.countries.models.FetchStatus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class CountriesViewModel @Inject constructor(
+class CountriesViewModel @ViewModelInject constructor(
     private val fetchCountriesUseCase: FetchCountries
 ) : BaseViewModel<CountriesViewState, CountriesAction, CountriesEvent>() {
 

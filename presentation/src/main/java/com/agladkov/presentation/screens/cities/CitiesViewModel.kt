@@ -1,5 +1,6 @@
 package com.agladkov.presentation.screens.cities
 
+import androidx.hilt.lifecycle.ViewModelInject
 import com.agladkov.domain.usecases.cities.FetchCities
 import com.agladkov.presentation.base.BaseViewModel
 import com.agladkov.presentation.screens.cities.models.CitiesAction
@@ -14,7 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class CitiesViewModel @Inject constructor(
+class CitiesViewModel @ViewModelInject constructor(
     private val fetchCitiesUseCase: FetchCities
 ) : BaseViewModel<CitiesViewState, CitiesAction, CitiesEvent>() {
 
